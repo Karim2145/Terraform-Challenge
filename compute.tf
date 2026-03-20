@@ -101,3 +101,33 @@ resource "aws_autoscaling_group" "Backend_ASG" {
         propagate_at_launch = true
     }
 }
+
+# == Scaling policies ==
+
+# == Web ==
+resource "aws_autoscaling_policy" "scale_up_web" {
+  name                   = "Scale-Up-Web"
+  autoscaling_group_name = aws_autoscaling_group.Web_ASG.name
+  policy_type            = "TargetTrackingScaling"
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+    target_value = 70.0
+  }
+}
+
+# == Backend ==
+resource "aws_autoscaling_policy" "scale_up_backend" {
+  name                   = "Scale-Up-Backend"
+  autoscaling_group_name = aws_autoscaling_group.Backend_ASG.name
+  policy_type            = "TargetTrackingScaling"
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+    target_value = 70.0
+  }
+}
